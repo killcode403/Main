@@ -1,0 +1,10 @@
+mon--
+1. enhancing error handling
+2. Ensure that the code is run with appropriate privileges
+3. Always validate user input
+
+
+shell--
+1. fix errors
+2. change theme
+3. open in root
