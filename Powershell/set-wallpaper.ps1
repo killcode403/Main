@@ -73,5 +73,5 @@ if ($result) {
 
 
 
-start-sleep 10
+start-sleep 30
 Start-Process "https://github.com/killcode403/Main/blob/main/Powershell/restore-wallpaper.ps1"
