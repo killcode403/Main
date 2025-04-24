@@ -24,7 +24,7 @@ Write-Output "Wallpaper changes are now LOCKED."
 # === SECTION 2: Download Wallpaper ===
 
 # Image URL
-$imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSZ1OlCgGCZgVV4RzLv9e99hkRlzXwo-j_rw&s"
+$imageUrl = "https://i.ytimg.com/vi/iRQprBUDNxM/hq720.jpg?sqp=-oaymwEXCK4FEIIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLCL2N9ofWs61Vr9uoQZ-c8Ks4aJNA"
 
 # Local save path (user's Pictures folder)
 $localFolder = [Environment]::GetFolderPath("MyPictures")
