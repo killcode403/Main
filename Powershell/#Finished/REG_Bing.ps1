@@ -1,61 +1,119 @@
+# Ensure running as Admin
+If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Host "This script requires administrative privileges. Please run again and accept the UAC prompt." -ForegroundColor Red
+    Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    Exit
+}
+
 # Define the path to the registry key
 $RegPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search\"
 $key = "BingSearchEnabled"
 Clear-Host
-Write-Host -NoNewline "KEY EDITOR: " -ForegroundColor cyan -BackgroundColor darkblue
-Write-Host -NoNewline "'BingSearchEnabled' " -ForegroundColor green -BackgroundColor darkblue
-Write-Host -NoNewline $RegPath -ForegroundColor darkgray -BackgroundColor darkblue
+Write-Host -NoNewline "KEY EDITOR: " -ForegroundColor Cyan -BackgroundColor DarkBlue
+Write-Host -NoNewline "'BingSearchEnabled' " -ForegroundColor Green -BackgroundColor DarkBlue
+Write-Host -NoNewline $RegPath -ForegroundColor DarkGray -BackgroundColor DarkBlue
 Write-Host ""
 
 # Get the value of the registry key with ErrorAction to suppress errors
-$value = Get-ItemProperty -Path $RegPath -Name $key -ErrorAction SilentlyContinue | Select-Object -ExpandProperty $key
+try {
+    $value = Get-ItemProperty -Path $RegPath -Name $key -ErrorAction SilentlyContinue | Select-Object -ExpandProperty $key
+} catch {
+    Write-Host "Error reading registry key. Error: $_" -ForegroundColor Red
+    Exit
+}
 
-# Corrected condition: Check if the value is either 1 or 0
-if ($value -lt 0) {
+# Check if the registry key exists or needs to be created
+if ($null -eq $value) {
+    Write-Host "The registry key does not exist." -ForegroundColor Yellow
+
     # Prompt the user to create the registry key
-    Write-Host -NoNewline "Warning: " -ForegroundColor red -BackgroundColor gray
-    Write-Host "Choice 'Y': New directory will be made, any existing keys in this directory will be removed" -ForegroundColor black -BackgroundColor gray
-    $createKey = Read-Host "Registry key does not exist. Do you want to create it? (Y/N)"
+    $createKey = $null
+    while ($createKey -eq $null) {
+        $createKey = Read-Host "Do you want to create the key? (Y/N)"
+        switch ($createKey.ToUpper()) {
+            "Y" {
+                # Create the new registry key
+                try {
+                    New-Item -Path $RegPath -Force
+                    Write-Host "Registry key created." -ForegroundColor Green
+                } catch {
+                    Write-Host "Failed to create the registry key. Error: $_" -ForegroundColor Red
+                    Exit
+                }
 
-    if ($createKey -eq 'Y' -or $createKey -eq 'y') {
-        # Create the new registry key
-        New-Item -Path $RegPath -Force
-
-        # Prompt the user to enable or disable the key
-        $enableDisable = Read-Host "Registry key created. Do you want to enable (E) or disable (D) it?"
-
-        if ($enableDisable -eq 'E' -or $enableDisable -eq 'e') {
-            Set-ItemProperty -Path $RegPath -Name $key -Value 1
-            Write-Host "Registry key enabled."
-        }
-        elseif ($enableDisable -eq 'D' -or $enableDisable -eq 'd') {
-            Set-ItemProperty -Path $RegPath -Name $key -Value 0
-            Write-Host "Registry key disabled."
-        }
-        else {
-            Write-Host "Invalid input. No changes made."
+                # Prompt the user to enable or disable the key
+                $enableDisable = $null
+                while ($enableDisable -eq $null) {
+                    $enableDisable = Read-Host "Do you want to enable (E) or disable (D) the key?"
+                    switch ($enableDisable.ToUpper()) {
+                        "E" {
+                            try {
+                                Set-ItemProperty -Path $RegPath -Name $key -Value 1
+                                Write-Host "Registry key enabled." -ForegroundColor Green
+                            } catch {
+                                Write-Host "Failed to enable the registry key. Error: $_" -ForegroundColor Red
+                            }
+                            break
+                        }
+                        "D" {
+                            try {
+                                Set-ItemProperty -Path $RegPath -Name $key -Value 0
+                                Write-Host "Registry key disabled." -ForegroundColor Green
+                            } catch {
+                                Write-Host "Failed to disable the registry key. Error: $_" -ForegroundColor Red
+                            }
+                            break
+                        }
+                        Default {
+                            Write-Host "Invalid input. Please enter 'E' to enable or 'D' to disable." -ForegroundColor Yellow
+                            $enableDisable = $null
+                        }
+                    }
+                }
+            }
+            "N" {
+                Write-Host "Registry key creation aborted." -ForegroundColor Red
+                Exit
+            }
+            Default {
+                Write-Host "Invalid input. Please enter 'Y' or 'N'." -ForegroundColor Yellow
+                $createKey = $null
+            }
         }
     }
-    else {
-        Write-Host "Registry key creation aborted."
-        Exit
+} else {
+    Write-Host "The registry key already exists. Current value: $value" -ForegroundColor Cyan
+
+    # Prompt the user to enable or disable the key
+    $enableDisable = $null
+    while ($enableDisable -eq $null) {
+        $enableDisable = Read-Host "Do you want to enable (E) or disable (D) the key?"
+        switch ($enableDisable.ToUpper()) {
+            "E" {
+                try {
+                    Set-ItemProperty -Path $RegPath -Name $key -Value 1
+                    Write-Host "Registry key enabled." -ForegroundColor Green
+                } catch {
+                    Write-Host "Failed to enable the registry key. Error: $_" -ForegroundColor Red
+                }
+                break
+            }
+            "D" {
+                try {
+                    Set-ItemProperty -Path $RegPath -Name $key -Value 0
+                    Write-Host "Registry key disabled." -ForegroundColor Green
+                } catch {
+                    Write-Host "Failed to disable the registry key. Error: $_" -ForegroundColor Red
+                }
+                break
+            }
+            Default {
+                Write-Host "Invalid input. Please enter 'E' to enable or 'D' to disable." -ForegroundColor Yellow
+                $enableDisable = $null
+            }
+        }
     }
 }
-else {
-    # Prompt the user to enable or disable the existing key
-    $enableDisable = Read-Host "Registry key already exists. Do you want to enable (E) or disable (D) it?"
 
-    if ($enableDisable -eq 'E' -or $enableDisable -eq 'e') {
-        Set-ItemProperty -Path $RegPath -Name $key -Value 1
-        Write-Host "Registry key enabled."
-    }
-    elseif ($enableDisable -eq 'D' -or $enableDisable -eq 'd') {
-        Set-ItemProperty -Path $RegPath -Name $key -Value 0
-        Write-Host "Registry key disabled."
-    }
-    else {
-        Write-Host "Invalid input. No changes made."
-    }
-}
-
+# Pause the script before exiting
 pause
