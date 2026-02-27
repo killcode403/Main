@@ -1,0 +1,30 @@
+REM # Author: KC99 / Language: Duckyscript
+REM # Description: Install and enables ssh server
+REM # ======================= Start-Code =======================
+REM Install SSH Client
+STRING Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+DELAY 1000
+SHIFT ENTER
+
+REM Install SSH Server
+STRING Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+DELAY 1000
+SHIFT ENTER
+STRING Start-Sleep -Seconds 3
+DELAY 1000
+SHIFT ENTER
+
+REM Verify Installation
+STRING Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
+DELAY 1000
+SHIFT ENTER
+
+REM Start sshd service
+STRING Start-Service sshd
+DELAY 1000
+SHIFT ENTER
+
+REM Set sshd to start automatically
+STRING Set-Service -Name sshd -StartupType 'Automatic'
+ENTER
+DELAY 1000
