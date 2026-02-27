@@ -1,3 +1,6 @@
+# Author: KC99 / Language: Powershell
+# Description: Sets web status of windows start menu search
+# ======================= Start-Code =======================
 # Ensure running as Admin
 If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Host "This script requires administrative privileges. Please run again and accept the UAC prompt." -ForegroundColor Red
