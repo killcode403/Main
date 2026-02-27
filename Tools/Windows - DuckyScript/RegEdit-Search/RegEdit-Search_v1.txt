@@ -1,0 +1,127 @@
+REM # Author: KC99 / Language: DuckyScript
+REM # Description: Sets web status of windows start menu search
+REM # ======================= Start-Code =======================
+DELAY 50
+GUI R
+DELAY 50
+STRING powershell
+DELAY 50
+REM (run as admin)
+CTRL-SHIFT ENTER 
+DELAY 2000
+REM (wait for user to accecpt admin prompt)
+WAIT_FOR_BUTTON_PRESS
+STRING # Execute Code??
+WAIT_FOR_BUTTON_PRESS
+ENTER
+DELAY 50
+STRING CLS
+DELAY 50
+ENTER
+DELAY 200
+ENTER
+STRING # Define the path to the registry key
+SHIFT ENTER
+STRING $registryPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search"
+SHIFT ENTER
+STRING Clear-Host
+SHIFT ENTER
+STRING  Write-Host -NoNewline "KEY EDITOR: " -ForegroundColor cyan -BackgroundColor darkblue
+SHIFT ENTER 
+STRING Write-Host -NoNewline "BingSearchEnabled" -ForegroundColor green -BackgroundColor darkblue
+SHIFT ENTER
+STRING Write-Host ""
+SHIFT ENTER
+STRING # Check if the registry key exists
+SHIFT ENTER
+STRING if (-not (Test-Path $registryPath)) {
+SHIFT ENTER
+STRING     # Prompt the user to create the registry key
+SHIFT ENTER
+STRING     $createKey = Read-Host "Registry key does not exist. Do you want to create it? (Y/N)"
+SHIFT ENTER
+STRING     # Check user input
+SHIFT ENTER
+STRING     if ($createKey -eq 'Y' -or $createKey -eq 'y') {
+SHIFT ENTER
+STRING         # Create the new registry key
+SHIFT ENTER
+STRING         New-Item -Path $registryPath -Force
+SHIFT ENTER
+STRING         # Prompt the user to enable or disable the key
+SHIFT ENTER
+STRING         $enableDisable = Read-Host "Registry key created. Do you want to enable (E) or disable (D) it?"
+SHIFT ENTER
+STRING         # Set the value based on user input
+SHIFT ENTER
+STRING         if ($enableDisable -eq 'E' -or $enableDisable -eq 'e') {
+SHIFT ENTER
+STRING             Set-ItemProperty -Path $registryPath -Name "BingSearchEnabled" -Value 1
+SHIFT ENTER
+STRING             Write-Host "Registry key enabled."
+SHIFT ENTER
+STRING         }
+SHIFT ENTER
+STRING         elseif ($enableDisable -eq 'D' -or $enableDisable -eq 'd') {
+SHIFT ENTER
+STRING             Set-ItemProperty -Path $registryPath -Name "BingSearchEnabled" -Value 0
+SHIFT ENTER
+STRING             Write-Host "Registry key disabled."
+SHIFT ENTER
+STRING         }
+SHIFT ENTER
+STRING         else {
+SHIFT ENTER
+STRING             Write-Host "Invalid input. No changes made."
+SHIFT ENTER
+STRING         }
+SHIFT ENTER
+STRING     }
+SHIFT ENTER
+STRING     else {
+SHIFT ENTER
+STRING         Write-Host "Registry key creation aborted."
+SHIFT ENTER
+STRING         Exit
+SHIFT ENTER
+STRING     }
+SHIFT ENTER
+STRING }
+SHIFT ENTER
+STRING else {
+SHIFT ENTER
+STRING     # Prompt the user to enable or disable the existing key
+SHIFT ENTER
+STRING     $enableDisable = Read-Host "Registry key already exists. Do you want to enable (E) or disable (D) it?"
+SHIFT ENTER
+STRING     # Set the value based on user input
+SHIFT ENTER
+STRING     if ($enableDisable -eq 'E' -or $enableDisable -eq 'e') {
+SHIFT ENTER
+STRING         Set-ItemProperty -Path $registryPath -Name "BingSearchEnabled" -Value 1
+SHIFT ENTER
+STRING         Write-Host "Registry key enabled."
+SHIFT ENTER
+STRING     }
+SHIFT ENTER
+STRING     elseif ($enableDisable -eq 'D' -or $enableDisable -eq 'd') {
+SHIFT ENTER
+STRING         Set-ItemProperty -Path $registryPath -Name "BingSearchEnabled" -Value 0
+SHIFT ENTER
+STRING         Write-Host "Registry key disabled."
+SHIFT ENTER
+STRING     }
+SHIFT ENTER
+STRING     else {
+SHIFT ENTER
+STRING         Write-Host "Invalid input. No changes made."
+SHIFT ENTER
+STRING     }
+SHIFT ENTER
+STRING }
+SHIFT ENTER
+STRING pause
+ENTER
+
+
+
