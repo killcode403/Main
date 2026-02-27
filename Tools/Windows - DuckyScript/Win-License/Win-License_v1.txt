@@ -1,0 +1,23 @@
+REM # Author: KC99 / Language: Powershell
+REM # Description: Executes online code
+REM # ======================= Start-Code =======================
+DELAY 50
+GUI R
+DELAY 50
+STRING powershell
+DELAY 50
+REM (run as admin)
+CTRL-SHIFT ENTER 
+DELAY 2000
+REM (wait for user to accecpt admin prompt)
+WAIT_FOR_BUTTON_PRESS
+STRING # Execute Code??
+WAIT_FOR_BUTTON_PRESS
+ENTER
+DELAY 50
+STRING CLS
+DELAY 50
+ENTER
+DELAY 200
+STRING irm https://massgrave.dev/get | iex
+ENTER
