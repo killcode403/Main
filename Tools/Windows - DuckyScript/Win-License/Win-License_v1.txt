@@ -1,4 +1,4 @@
-REM # Author: KC99 / Language: Powershell
+REM # Author: KC99 / Language: DuckyScript
 REM # Description: Executes online code
 REM # ======================= Start-Code =======================
 DELAY 50
